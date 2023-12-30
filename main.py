@@ -1,4 +1,5 @@
-
+from prettytable import PrettyTable
+import random
 class process:
     def __init__(self,name,priority,arivalTime,serviceTime):
         self.name=name
@@ -8,6 +9,8 @@ class process:
         self.endTime=0
         self.processTime=0
         self.flagProcess= False
+        self.turnaround=0
+        self.responeTime=0
 
     def __str__(self):
         return f"name:{self.name} arival time:{self.arivalTime} service time:{self.serviceTime} priority:{self.priority} process time:{self.processTime} end time: {self.endTime} "
@@ -36,92 +39,127 @@ class processQueue:
 
 
 #main 
+flag=1
+while(flag==1):
+    Timequeue = processQueue()
+    Priotyqueue = processQueue()
+    savequeue = processQueue()
+    roundRobin = processQueue()
+    print("Priority Queue with Round robin ")
+    i=int(input("1 for manual enterning 2 for random antering:"))
+    while(i!=1 and i!=2):
+        i=int(input("1 for manual enterning 2 for random antering:"))
+    if(i==1):
+        numProcess=int(input("numeber of process:"))
+        Q=int(input("Time Quantum:"))
+        for i in range(numProcess):
+            name=input("name of task:")
+            arrivalTime=int(input("arrival time of taks:"))
+            serviceTime=int(input("brust time of taks"))
+            priority=int(input("priority of task(between 1-7):"))
+            while(priority<1 or priority>7):
+                priority=int(input("priority of task(between 1-7):"))
+            Timequeue.enQueue(process(name,priority,arrivalTime,serviceTime))
+    else:
+        numProcess=random.randint(1,11)
+        Q=random.randint(1,6)
+        for i in range(numProcess):
+            name="T"+str(i)
+            arrivalTime=random.randint(1,11)
+            serviceTime=random.randint(1,11)
+            priority=random.randint(1,8)
+            Timequeue.enQueue(process(name,priority,arrivalTime,serviceTime))
 
-x1=process("t1",2,0,3)
-x2=process("t2",1,2,2)
-x3=process("t3",5,5,2)
-x4=process("t4",5,3,3)
-x5=process("t5",5,3,2)
-x6=process("t6",7,3,2)
-Timequeue = processQueue()
-Priotyqueue = processQueue()
-savequeue = processQueue()
-roundRobin = processQueue()
-
-
-Timequeue.enQueue(x1)
-Timequeue.enQueue(x2)
-Timequeue.enQueue(x3)
-Timequeue.enQueue(x4)
-Timequeue.enQueue(x5)
-Timequeue.enQueue(x6)
-Timequeue.sortByArivalTime()
-Timequeue.printQueue()
-
-
-#find time
-time=0
-for i in Timequeue.Queue:
-    if(i.arivalTime>time):
-        time = i.arivalTime
-    time+=i.serviceTime
-
-print(time)
-
-for i in range(time):
-    for j in range(len(Timequeue.Queue)):
-        
-        if(int(Timequeue.Queue[0].arivalTime) == i):
-            x=Timequeue.deQueue()
-            Priotyqueue.enQueue(x)
-    Priotyqueue.sortByPrioty()
-    if(len(Priotyqueue.Queue)>0 or len(roundRobin.Queue)>0):
-        if(len(Priotyqueue.Queue)>0):
-            l=0
-            while (Priotyqueue.Queue[0].priority==Priotyqueue.Queue[l].priority) and (l+1<len(Priotyqueue.Queue)):
-                l+=1
-            if(Priotyqueue.Queue[0].priority==Priotyqueue.Queue[len(Priotyqueue.Queue)-1].priority):
-                l+=1
-        if(l>1 or len(roundRobin.Queue)>0):
-            if(len(roundRobin.Queue)<1):
-                for k in range(l):
-                    x=Priotyqueue.deQueue()
-                    roundRobin.enQueue(x)
-                    q=0
-            if(q<2):
-                q+=1
-                roundRobin.Queue[0].serviceTime-=1
-                print(roundRobin.Queue[0].name, i)
-                if(roundRobin.Queue[0].flagProcess==False):
-                    roundRobin.Queue[0].processTime=i
-                    roundRobin.Queue[0].flagProcess=True
-            else:
-                x=roundRobin.deQueue()
-                roundRobin.enQueue(x)
-                roundRobin.Queue[0].serviceTime-=1
-                print(roundRobin.Queue[0].name, i)
-                if(roundRobin.Queue[0].flagProcess==False):
-                    roundRobin.Queue[0].processTime=i
-                    roundRobin.Queue[0].flagProcess=True
-                q=1
-            if(roundRobin.Queue[0].serviceTime==0):
-                roundRobin.Queue[0].endTime= i
-                x=roundRobin.deQueue()
-                savequeue.enQueue(x)
-                q=0
-        else:
-            print(Priotyqueue.Queue[0].name, i)
-            Priotyqueue.Queue[0].serviceTime -=1
-            if(Priotyqueue.Queue[0].flagProcess==False):
-                Priotyqueue.Queue[0].processTime=i
-                Priotyqueue.Queue[0].flagProcess=True
-
-            if(Priotyqueue.Queue[0].serviceTime == 0):
-                Priotyqueue.Queue[0].endTime= i
-                x=Priotyqueue.deQueue()
-                savequeue.enQueue(x)
+    Timequeue.sortByArivalTime()
+    Timequeue.printQueue()
 
 
-print("*******************")  
-savequeue.printQueue()
+    #find time
+    time=0
+    for i in Timequeue.Queue:
+        if(i.arivalTime>time):
+            time = i.arivalTime
+        time+=i.serviceTime
+
+    print(time)
+
+    for i in range(time):
+        for j in range(len(Timequeue.Queue)):
             
+            if(int(Timequeue.Queue[0].arivalTime) == i):
+                x=Timequeue.deQueue()
+                Priotyqueue.enQueue(x)
+        Priotyqueue.sortByPrioty()
+        if(len(Priotyqueue.Queue)>0 or len(roundRobin.Queue)>0):
+            if(len(Priotyqueue.Queue)>0):
+                l=0
+                while (Priotyqueue.Queue[0].priority==Priotyqueue.Queue[l].priority) and (l+1<len(Priotyqueue.Queue)):
+                    l+=1
+                if(Priotyqueue.Queue[0].priority==Priotyqueue.Queue[len(Priotyqueue.Queue)-1].priority):
+                    l+=1
+            if(l>1 or len(roundRobin.Queue)>0):
+                if(len(roundRobin.Queue)<1):
+                    for k in range(l):
+                        x=Priotyqueue.deQueue()
+                        roundRobin.enQueue(x)
+                        q=0
+                if(q<2):
+                    q+=1
+                    roundRobin.Queue[0].serviceTime-=1
+                    print(roundRobin.Queue[0].name, i)
+                    if(roundRobin.Queue[0].flagProcess==False):
+                        roundRobin.Queue[0].processTime=i
+                        roundRobin.Queue[0].flagProcess=True
+                else:
+                    x=roundRobin.deQueue()
+                    roundRobin.enQueue(x)
+                    roundRobin.Queue[0].serviceTime-=1
+                    print(roundRobin.Queue[0].name, i)
+                    if(roundRobin.Queue[0].flagProcess==False):
+                        roundRobin.Queue[0].processTime=i
+                        roundRobin.Queue[0].flagProcess=True
+                    q=1
+                if(roundRobin.Queue[0].serviceTime==0):
+                    roundRobin.Queue[0].endTime= i
+                    x=roundRobin.deQueue()
+                    savequeue.enQueue(x)
+                    q=0
+            else:
+                print(Priotyqueue.Queue[0].name, i)
+                Priotyqueue.Queue[0].serviceTime -=1
+                if(Priotyqueue.Queue[0].flagProcess==False):
+                    Priotyqueue.Queue[0].processTime=i
+                    Priotyqueue.Queue[0].flagProcess=True
+
+                if(Priotyqueue.Queue[0].serviceTime == 0):
+                    Priotyqueue.Queue[0].endTime= i
+                    x=Priotyqueue.deQueue()
+                    savequeue.enQueue(x)
+
+
+    print("*******************")  
+    savequeue.printQueue()
+    avgRespone=0
+    avgTurnaround=0
+    my_table= PrettyTable()   
+    my_table.field_names=["Name","Respone Time","Turnaround Time"]
+    for i in savequeue.Queue:
+        i.responeTime=i.processTime-i.arivalTime
+        i.turnaround=i.endTime-i.arivalTime
+        my_table.add_row([i.name,i.responeTime,i.turnaround])
+        avgRespone+=i.responeTime
+        avgTurnaround+=i.turnaround
+    print(my_table)
+
+    avgRespone=avgRespone/len(savequeue.Queue)
+    avgTurnaround=avgTurnaround/len(savequeue.Queue)
+
+    avg_table= PrettyTable()
+    avg_table.field_names = ["Total","Avg Respone","Avg Turnaround"]
+    avg_table.add_row([1,avgRespone,avgTurnaround])
+    print(avg_table)
+    print("do you want to continue?")
+    flag=int(input("press 1 to continue or 2 to end the program"))
+    while(flag!=1 and flag!=2):
+        print("do you want to continue?")
+        flag=int(input("press 1 to continue or 2 to end the program"))
