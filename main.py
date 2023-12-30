@@ -49,7 +49,8 @@ while(flag==1):
     Priotyqueue = processQueue()
     savequeue = processQueue()
     roundRobin = processQueue()
-    
+    time_table= PrettyTable()
+    time_table.field_names =["task name","clock tick"]
     print("Priority Queue with Round robin ")
     i=int(input("1 for manual enterning 2 for random antering:"))
     # Validate user input for manual or random entry
@@ -61,8 +62,8 @@ while(flag==1):
         Q=int(input("Time Quantum:"))
         for i in range(numProcess):
             name=input("name of task:")
-            arrivalTime=int(input("arrival time of taks:"))
-            serviceTime=int(input("brust time of taks"))
+            arrivalTime=int(input("arrival time of task:"))
+            serviceTime=int(input("brust time of task:"))
             priority=int(input("priority of task(between 1-7):"))
             while(priority<1 or priority>7):
                 priority=int(input("priority of task(between 1-7):"))
@@ -79,6 +80,7 @@ while(flag==1):
             Timequeue.enQueue(process(name,priority,arrivalTime,serviceTime))
     # Sort processes by arrival time and print
     Timequeue.sortByArivalTime()
+    print("process befor:")
     Timequeue.printQueue()
 
 
@@ -89,7 +91,7 @@ while(flag==1):
             time = i.arivalTime
         time+=i.serviceTime
 
-    print(time)
+    
     # Process execution based on priority and round robin
     for i in range(time):
         for j in range(len(Timequeue.Queue)):
@@ -116,7 +118,7 @@ while(flag==1):
                 if(q<Q):
                     q+=1
                     roundRobin.Queue[0].serviceTime-=1
-                    print(roundRobin.Queue[0].name, i)
+                    time_table.add_row([roundRobin.Queue[0].name,i])
                     if(roundRobin.Queue[0].flagProcess==False):
                         roundRobin.Queue[0].processTime=i
                         roundRobin.Queue[0].flagProcess=True
@@ -124,7 +126,7 @@ while(flag==1):
                     x=roundRobin.deQueue()
                     roundRobin.enQueue(x)
                     roundRobin.Queue[0].serviceTime-=1
-                    print(roundRobin.Queue[0].name, i)
+                    time_table.add_row([roundRobin.Queue[0].name,i])
                     if(roundRobin.Queue[0].flagProcess==False):
                         roundRobin.Queue[0].processTime=i
                         roundRobin.Queue[0].flagProcess=True
@@ -137,7 +139,7 @@ while(flag==1):
                     #end Round Robin
                     #start Priority Queue
             else:
-                print(Priotyqueue.Queue[0].name, i)
+                time_table.add_row([Priotyqueue.Queue[0].name,i])
                 Priotyqueue.Queue[0].serviceTime -=1
                 if(Priotyqueue.Queue[0].flagProcess==False):
                     Priotyqueue.Queue[0].processTime=i
@@ -151,6 +153,8 @@ while(flag==1):
                     #end Priority Queue
                     
     print("*******************")  
+    print(time_table)
+    print("process after")
     savequeue.printQueue()
     avgRespone=0
     avgTurnaround=0
