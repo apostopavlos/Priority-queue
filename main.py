@@ -93,25 +93,27 @@ while(flag==1):
     # Process execution based on priority and round robin
     for i in range(time):
         for j in range(len(Timequeue.Queue)):
-            
-            if(int(Timequeue.Queue[0].arivalTime) == i):
+        # Pass the processes from Timequeue to Priotyqueue when the arrival time of a process matches the current time (i)    
+            if(int(Timequeue.Queue[0].arivalTime) == i): 
                 x=Timequeue.deQueue()
                 Priotyqueue.enQueue(x)
-        Priotyqueue.sortByPrioty()
-        if(len(Priotyqueue.Queue)>0 or len(roundRobin.Queue)>0):
+        Priotyqueue.sortByPrioty() # Sort processes by priority
+        if(len(Priotyqueue.Queue)>0 or len(roundRobin.Queue)>0): # Check if there are processes available for execution
             if(len(Priotyqueue.Queue)>0):
                 l=0
+                # Check if there are processes whith some priority
                 while (Priotyqueue.Queue[0].priority==Priotyqueue.Queue[l].priority) and (l+1<len(Priotyqueue.Queue)):
                     l+=1
                 if(Priotyqueue.Queue[0].priority==Priotyqueue.Queue[len(Priotyqueue.Queue)-1].priority):
                     l+=1
             if(l>1 or len(roundRobin.Queue)>0):
+                #start Round robin
                 if(len(roundRobin.Queue)<1):
                     for k in range(l):
                         x=Priotyqueue.deQueue()
                         roundRobin.enQueue(x)
                         q=0
-                if(q<2):
+                if(q<Q):
                     q+=1
                     roundRobin.Queue[0].serviceTime-=1
                     print(roundRobin.Queue[0].name, i)
@@ -132,6 +134,8 @@ while(flag==1):
                     x=roundRobin.deQueue()
                     savequeue.enQueue(x)
                     q=0
+                    #end Round Robin
+                    #start Priority Queue
             else:
                 print(Priotyqueue.Queue[0].name, i)
                 Priotyqueue.Queue[0].serviceTime -=1
@@ -144,7 +148,8 @@ while(flag==1):
                     x=Priotyqueue.deQueue()
                     savequeue.enQueue(x)
 
-
+                    #end Priority Queue
+                    
     print("*******************")  
     savequeue.printQueue()
     avgRespone=0
