@@ -1,5 +1,7 @@
 from prettytable import PrettyTable
 import random
+
+# Class to represent a process
 class process:
     def __init__(self,name,priority,arivalTime,serviceTime):
         self.name=name
@@ -16,6 +18,7 @@ class process:
         return f"name:{self.name} arival time:{self.arivalTime} service time:{self.serviceTime} priority:{self.priority} process time:{self.processTime} end time: {self.endTime} "
         
 
+# Class to represent a queue of processes
 class processQueue:
     def __init__(self) :
         self.Queue = []
@@ -41,14 +44,18 @@ class processQueue:
 #main 
 flag=1
 while(flag==1):
+    # Initialize process queues
     Timequeue = processQueue()
     Priotyqueue = processQueue()
     savequeue = processQueue()
     roundRobin = processQueue()
+    
     print("Priority Queue with Round robin ")
     i=int(input("1 for manual enterning 2 for random antering:"))
+    # Validate user input for manual or random entry
     while(i!=1 and i!=2):
         i=int(input("1 for manual enterning 2 for random antering:"))
+     # Process entry based on user choice
     if(i==1):
         numProcess=int(input("numeber of process:"))
         Q=int(input("Time Quantum:"))
@@ -60,6 +67,7 @@ while(flag==1):
             while(priority<1 or priority>7):
                 priority=int(input("priority of task(between 1-7):"))
             Timequeue.enQueue(process(name,priority,arrivalTime,serviceTime))
+     # Process entry based on random choice
     else:
         numProcess=random.randint(1,11)
         Q=random.randint(1,6)
@@ -69,12 +77,12 @@ while(flag==1):
             serviceTime=random.randint(1,11)
             priority=random.randint(1,8)
             Timequeue.enQueue(process(name,priority,arrivalTime,serviceTime))
-
+    # Sort processes by arrival time and print
     Timequeue.sortByArivalTime()
     Timequeue.printQueue()
 
 
-    #find time
+    # Find total time required for execution
     time=0
     for i in Timequeue.Queue:
         if(i.arivalTime>time):
@@ -82,7 +90,7 @@ while(flag==1):
         time+=i.serviceTime
 
     print(time)
-
+    # Process execution based on priority and round robin
     for i in range(time):
         for j in range(len(Timequeue.Queue)):
             
@@ -143,6 +151,7 @@ while(flag==1):
     avgTurnaround=0
     my_table= PrettyTable()   
     my_table.field_names=["Name","Respone Time","Turnaround Time"]
+   # Calculate and display response time and turnaround time for each process
     for i in savequeue.Queue:
         i.responeTime=i.processTime-i.arivalTime
         i.turnaround=i.endTime-i.arivalTime
@@ -150,7 +159,7 @@ while(flag==1):
         avgRespone+=i.responeTime
         avgTurnaround+=i.turnaround
     print(my_table)
-
+    # Calculate and display average response time and turnaround time
     avgRespone=avgRespone/len(savequeue.Queue)
     avgTurnaround=avgTurnaround/len(savequeue.Queue)
 
@@ -158,8 +167,9 @@ while(flag==1):
     avg_table.field_names = ["Total","Avg Respone","Avg Turnaround"]
     avg_table.add_row([1,avgRespone,avgTurnaround])
     print(avg_table)
+    # Prompt user to continue or end the program
     print("do you want to continue?")
-    flag=int(input("press 1 to continue or 2 to end the program"))
+    flag=int(input("press 1 to continue or 2 to end the program: "))
     while(flag!=1 and flag!=2):
         print("do you want to continue?")
-        flag=int(input("press 1 to continue or 2 to end the program"))
+        flag=int(input("press 1 to continue or 2 to end the program: "))
